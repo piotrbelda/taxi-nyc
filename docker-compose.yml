@@ -2,7 +2,8 @@ name: taxi-nyc
 
 services:
   db:
-    container_name: db
+    container_name: taxi-db
+    hostname: taxi
     image: postgres:latest
     environment:
       POSTGRES_USER: airflow
@@ -14,9 +15,9 @@ services:
       retries: 5
     restart: always
     volumes:
-      - db:/var/lib/postgresql/data
+      - taxi-db:/var/lib/postgresql/data
     ports:
       - 5433:5432
 
 volumes:
-  db:
+  taxi-db:
