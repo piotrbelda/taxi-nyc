@@ -1,20 +1,33 @@
 name: taxi-nyc
 
 services:
+  mage:
+    image: mage
+    container_name: mage
+    hostname: mage
+    build:
+      context: ./docker/mage
+      dockerfile: Dockerfile
+    env_file:
+      - docker/mage.env
+    ports:
+      - 6789:6789
+
   db:
     container_name: taxi-db
     hostname: taxi
     image: postgres:latest
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
+      test: ["CMD", "pg_isready", "-U", "postgres"]
       interval: 5s
       retries: 5
     restart: always
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - taxi-db:/var/lib/postgresql/data
     ports:
       - 5433:5432
